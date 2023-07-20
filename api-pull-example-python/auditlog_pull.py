@@ -2,6 +2,7 @@ import requests
 import os
 import time
 import math
+from ratelimiter import RateLimiter
 
 api_host = "https://api.stackhawk.com"
 auth_token = None
@@ -36,6 +37,7 @@ def refresh_token():
     return decorator
 
 
+@RateLimiter(max_calls=240, period=1)
 @refresh_token()
 def get_audit_events():
     start_time, end_time = get_time_range()
@@ -62,33 +64,12 @@ def get_audit_events():
     return True
 
 
-@refresh_token()
-def get_scan_results():
-    page_size = 100
-    current_page = 0
-    scan_results_url = "/api/v1/scan/{}".format(orgId)
-    params = {'pageToken': current_page, 'pageSize': page_size}
-    headers = {"Authorization": "Bearer " + auth_token}
-    response = requests.get(api_host + scan_results_url, headers=headers, params=params)
-    total_records = response.json()['totalCount']
-    pages = math.ceil(int(total_records) / page_size)+1
-    for i in range(current_page, pages):
-        next_page_token = response.json()['nextPageToken']
-        records = response.json()['applicationScanResults']
-        if len(records) > 0:
-            for record in records:
-                print(record)
-        params = {'pageToken': next_page_token, 'pageSize': page_size}
-        response = requests.get(api_host + scan_results_url, headers=headers, params=params)
-    return True
-
-
 def get_time_range():
     # Look for a file with the start time in UnixTS
     # If we find it, extract and use the time
     # If we don't find it use no begin time and meow as the end time
     # write back the end time to the file for the next run
-    file_name = "last_run_ts.txt"
+    file_name = "last_audit_run_ts.txt"
     start_time = 0
     end_time = time.time()
     if os.path.isfile(file_name):
@@ -108,14 +89,10 @@ def get_time_range():
     return int(start_time*1000), int(end_time*1000)
 
 
-# Press the green button in the gutter to run the script.
 if __name__ == '__main__':
     orgId = os.environ.get('ORGID')
     if orgId is None:
         exit()
     get_auth_token()
-    #get_audit_events()
-    get_scan_results()
+    get_audit_events()
 
-
-# See PyCharm help at https://www.jetbrains.com/help/pycharm/
