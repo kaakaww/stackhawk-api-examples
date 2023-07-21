@@ -3,6 +3,7 @@ import os
 import time
 import math
 from ratelimiter import RateLimiter
+import json
 
 api_host = "https://api.stackhawk.com"
 auth_token = None
@@ -55,7 +56,7 @@ def get_audit_events():
         records = response.json()['auditRecords']
         if len(records) > 0:
             for record in records:
-                print(record)
+                print(json.dumps(record))
         else:
             next()
         params = {'start': start_time, 'end': end_time, 'sortfield': 'createdDate',
