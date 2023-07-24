@@ -1,5 +1,6 @@
 import requests
 import os
+import sys
 import time
 import math
 from ratelimiter import RateLimiter
@@ -72,7 +73,7 @@ def get_time_range():
     # If we find it, extract and use the time
     # If we don't find it use no begin time and meow as the end time
     # write back the end time to the file for the next run
-    file_name = "last_audit_run_ts.txt"
+    file_name = os.path.abspath( os.path.dirname( __file__ ) ) + "/last_audit_run_ts.txt"
     start_time = 0
     end_time = time.time()
     if os.path.isfile(file_name):
