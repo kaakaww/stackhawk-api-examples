@@ -4,6 +4,7 @@ import time
 import math
 from ratelimiter import RateLimiter
 import json
+from dotenv import load_dotenv
 
 api_host = "https://api.stackhawk.com"
 auth_token = None
@@ -56,6 +57,7 @@ def get_audit_events():
         records = response.json()['auditRecords']
         if len(records) > 0:
             for record in records:
+                record['payload'] = json.loads(record['payload'].replace('\\',''))
                 print(json.dumps(record))
         else:
             next()
@@ -91,6 +93,7 @@ def get_time_range():
 
 
 if __name__ == '__main__':
+    load_dotenv()
     orgId = os.environ.get('ORGID')
     if orgId is None:
         exit()
