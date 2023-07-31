@@ -1,3 +1,9 @@
+# Audit script checkpoint file
+last_audit_run_ts.txt
+
+# Jetbrains
+.idea
+
 # Byte-compiled / optimized / DLL files
 __pycache__/
 *.py[cod]

@@ -55,7 +55,7 @@ def get_scan_results():
         records = response.json()['applicationScanResults']
         if len(records) > 0:
             for record in records:
-            # Need to kill 'severityStats' - we don't use it anymore
+            # Need to kill 'severityStats' - depricated
                 if record['scan']['status'] == 'COMPLETED':
                     record.pop('severityStats', None)
                     for status in record['alertStats']['alertStatusStats']:
@@ -103,3 +103,4 @@ if __name__ == '__main__':
         exit()
     get_auth_token()
     get_scan_results()
+
