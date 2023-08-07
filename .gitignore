@@ -1,3 +1,10 @@
+# IntelliJ IDEA
+.idea/
+
+# Python polling scripts
+last_audit_run_ts.txt
+
+
 # Byte-compiled / optimized / DLL files
 __pycache__/
 *.py[cod]
